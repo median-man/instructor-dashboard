@@ -74,7 +74,7 @@ export function BcsProvider({ children }) {
 
 export const useBcs = () => useContext(bcsContext);
 
-export const useCohorts = () => {
+const useAsyncRequestor = (requestor) => {
   const [state, setState] = useState({
     pending: false,
     result: null,
@@ -84,8 +84,13 @@ export const useCohorts = () => {
   const load = async () => {
     if (state.isLoaded || state.pending) return;
     setState((prevState) => ({ ...prevState, pending: true }));
-    const { result, error } = await bcsService.cohorts();
+    const { result, error } = await requestor();
     setState({ result, error, pending: false, isLoaded: true });
   };
   return { ...state, load };
 };
+
+export const useCohorts = () => useAsyncRequestor(bcsService.cohorts);
+
+export const useStudents = (cohortId) =>
+  useAsyncRequestor(() => bcsService.students({ cohortId }));

@@ -1,13 +1,15 @@
 import { useEffect } from "react";
 import { Switch, Route, useParams } from "react-router";
 import { Link } from "react-router-dom";
-import { useCohorts } from "./bcs";
+import { useCohorts, useStudents } from "./bcs";
+
+const MAX_ABSENCES = 5;
 
 function Dashboard() {
   return (
     <div className="container">
       <Switch>
-        <Route path="/:cohortId">
+        <Route path="/:enrollmentId">
           <Overview />
         </Route>
         <Route exact path="/">
@@ -33,8 +35,12 @@ function Cohorts() {
   return (
     <>
       <h1>Please choose a cohort</h1>
-      {cohorts.result.map(({ name, id }) => (
-        <Link key={id} to={`/${id}`} className="btn btn-outline-secondary">
+      {cohorts.result.map(({ name, enrollmentId }) => (
+        <Link
+          key={enrollmentId}
+          to={`/${enrollmentId}`}
+          className="btn btn-outline-secondary"
+        >
           {name}
         </Link>
       ))}{" "}
@@ -43,8 +49,55 @@ function Cohorts() {
 }
 
 function Overview() {
-  const { cohortId } = useParams();
-  return <div>Viewing id: {cohortId}</div>;
+  const { enrollmentId } = useParams();
+  const students = useStudents(enrollmentId);
+  useEffect(() => {
+    students.load();
+  }, [students]);
+  if (students.error) {
+    return <p>{students.error}</p>;
+  }
+  if (students.pending || !students.isLoaded) {
+    return <p>Loading students...</p>;
+  }
+  return <StudentTable students={Array.from(students.result.values())} />;
+}
+
+function StudentTable({ students }) {
+  console.log(students);
+  return (
+    <table className="table table-striped mt-5">
+      <thead>
+        <tr>
+          <th scope="col">First</th>
+          <th scope="col">Last</th>
+          <th scope="col">Absent</th>
+        </tr>
+      </thead>
+      <tbody>
+        {students.map((student) => (
+          <StudentTableRow key={student.id} student={student} />
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function StudentTableRow({ student }) {
+  const { firstName, lastName, totalAbsent } = student;
+  let trClassName = "";
+  if (totalAbsent > MAX_ABSENCES) {
+    trClassName = "table-danger";
+  } else if (totalAbsent > MAX_ABSENCES - 1) {
+    trClassName = "table-warning";
+  }
+  return (
+    <tr className={trClassName}>
+      <td>{firstName}</td>
+      <td>{lastName}</td>
+      <td>{totalAbsent}</td>
+    </tr>
+  );
 }
 
 export default Dashboard;

@@ -36,3 +36,9 @@ export const login = async (bcsCredentials) =>
   postJSON("/login", bcsCredentials);
 
 export const me = ({ authToken }) => getJSON("/me", { authToken });
+
+export const sessions = ({ authToken, enrollmentId }) =>
+  postJSON("/sessions", { enrollmentId }, { authToken });
+
+export const sessionDetail = ({ authToken, sessionId }) =>
+  postJSON("/sessionDetail", { sessionId }, { authToken });
