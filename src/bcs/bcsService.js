@@ -82,7 +82,6 @@ export const students = async ({ cohortId }) => {
     }
     let result = await db.get(`students:${cohortId}`);
     if (result) {
-      console.log("bcsService:result", result);
       return { result };
     }
     const sessions = await bcsApi.sessions({
