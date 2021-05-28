@@ -9,12 +9,17 @@ const MAX_ABSENCES = 5;
 
 function Overview() {
   const { enrollmentId } = useParams();
-  const [currentStudent, setCurrentStudent] = useState(null);
+  const [offCanvasState, setOffCanvasState] = useState({
+    show: false,
+    title: "",
+    children: null,
+  });
   const students = useStudents(enrollmentId);
 
   useEffect(() => {
     students.load();
   }, [students]);
+
   if (students.error) {
     return <p>{students.error}</p>;
   }
@@ -22,33 +27,63 @@ function Overview() {
     return <p>Loading students...</p>;
   }
 
+  const hideOffCanvas = () =>
+    setOffCanvasState((prevState) => ({ ...prevState, show: false }));
+
+  const handleHelp = () => {
+    setOffCanvasState({
+      show: true,
+      title: "Dashboard Help",
+      children: <DashboardHelp />,
+    });
+  };
+
+  const handleSelectStudent = (student) => {
+    setOffCanvasState({
+      show: true,
+      title: `${student.firstName} ${student.lastName}`,
+      children: <StudentDetails student={student} />,
+    });
+  };
+
   return (
     <>
       <StudentTable
-        onSelectStudent={setCurrentStudent}
+        onSelectStudent={handleSelectStudent}
         students={Array.from(students.result.values())}
+        onHelp={handleHelp}
       />
-      <OffCanvas
-        show={!!currentStudent}
-        title={
-          currentStudent &&
-          `${currentStudent.firstName} ${currentStudent.lastName}`
-        }
-        onClose={() => setCurrentStudent(null)}
-      >
-        {currentStudent && (
-          <>
-            <AbsencesSection student={currentStudent} />
-            <HomeworkIssuesSection grades={currentStudent.grades} />
-          </>
-        )}
-      </OffCanvas>
+      <OffCanvas onClose={hideOffCanvas} {...offCanvasState} />
     </>
   );
 }
 
-function AbsencesSection({ student }) {
-  const absentSess = student.attendance.filter((sess) => sess.absent);
+function DashboardHelp() {
+  return (
+    <ul className="list-group list-group-flush">
+      <li className="list-group-item">
+        Students failing to meet completion requirements are highlighted in
+        pink.
+      </li>
+      <li className="list-group-item">
+        Students at risk of failing to meet completion requirements are
+        highlighted in yellow.
+      </li>
+    </ul>
+  );
+}
+
+function StudentDetails({ student }) {
+  return (
+    <>
+      <AbsencesSection attendance={student.attendance} />
+      <HomeworkIssuesSection grades={student.grades} />
+    </>
+  );
+}
+
+function AbsencesSection({ attendance }) {
+  const absentSess = attendance.filter((sess) => sess.absent);
   return (
     <>
       <h6>Absences</h6>
@@ -118,9 +153,22 @@ function HomeworkIssueItem({ grade }) {
   );
 }
 
-function StudentTable({ students, onSelectStudent }) {
+function StudentTable({ students, onSelectStudent, onHelp }) {
   return (
-    <table className="table mt-5" style={{ maxWidth: 650 }}>
+    <table
+      className="table table-sm table-hover mt-5 caption-top"
+      style={{ maxWidth: 650 }}
+    >
+      <caption>
+        Click on a student to view additional details.{" "}
+        <button
+          style={{ verticalAlign: "inherit", padding: 0, cursor: "help" }}
+          className="btn btn-link"
+          onClick={onHelp}
+        >
+          help
+        </button>
+      </caption>
       <thead>
         <tr>
           <th scope="col">Name</th>
