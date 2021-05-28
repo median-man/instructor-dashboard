@@ -8,11 +8,7 @@ import TopBar from "./TopBar";
 function App() {
   return (
     <BcsProvider>
-      <Router
-        basename={
-          process.env.NODE_ENV === "production" ? "/instructor-dashboard" : "/"
-        }
-      >
+      <Router basename={process.env.PUBLIC_URL}>
         <TopBar />
         <Switch>
           <Route path="/login">
