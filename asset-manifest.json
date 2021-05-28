@@ -1,22 +1,22 @@
 {
   "files": {
-    "main.js": "/instructor-dashboard/static/js/main.f17eb812.chunk.js",
-    "main.js.map": "/instructor-dashboard/static/js/main.f17eb812.chunk.js.map",
+    "main.js": "/instructor-dashboard/static/js/main.3f5db9a0.chunk.js",
+    "main.js.map": "/instructor-dashboard/static/js/main.3f5db9a0.chunk.js.map",
     "runtime-main.js": "/instructor-dashboard/static/js/runtime-main.500b9be3.js",
     "runtime-main.js.map": "/instructor-dashboard/static/js/runtime-main.500b9be3.js.map",
     "static/css/2.4f8976c6.chunk.css": "/instructor-dashboard/static/css/2.4f8976c6.chunk.css",
-    "static/js/2.92609121.chunk.js": "/instructor-dashboard/static/js/2.92609121.chunk.js",
-    "static/js/2.92609121.chunk.js.map": "/instructor-dashboard/static/js/2.92609121.chunk.js.map",
+    "static/js/2.3c605fca.chunk.js": "/instructor-dashboard/static/js/2.3c605fca.chunk.js",
+    "static/js/2.3c605fca.chunk.js.map": "/instructor-dashboard/static/js/2.3c605fca.chunk.js.map",
     "static/js/3.ba42e3ab.chunk.js": "/instructor-dashboard/static/js/3.ba42e3ab.chunk.js",
     "static/js/3.ba42e3ab.chunk.js.map": "/instructor-dashboard/static/js/3.ba42e3ab.chunk.js.map",
     "index.html": "/instructor-dashboard/index.html",
     "static/css/2.4f8976c6.chunk.css.map": "/instructor-dashboard/static/css/2.4f8976c6.chunk.css.map",
-    "static/js/2.92609121.chunk.js.LICENSE.txt": "/instructor-dashboard/static/js/2.92609121.chunk.js.LICENSE.txt"
+    "static/js/2.3c605fca.chunk.js.LICENSE.txt": "/instructor-dashboard/static/js/2.3c605fca.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.500b9be3.js",
     "static/css/2.4f8976c6.chunk.css",
-    "static/js/2.92609121.chunk.js",
-    "static/js/main.f17eb812.chunk.js"
+    "static/js/2.3c605fca.chunk.js",
+    "static/js/main.3f5db9a0.chunk.js"
   ]
 }
