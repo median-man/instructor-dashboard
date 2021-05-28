@@ -17,13 +17,15 @@ export function BcsProvider({ children }) {
   });
 
   useEffect(() => {
-    bcsService.token().then((val) =>
+    let timerId;
+    bcsService.isLoggedIn().then((isLoggedIn) => {
       setState((prevState) => ({
         ...prevState,
-        isLoggedIn: !!val,
+        isLoggedIn,
         pending: false,
-      }))
-    );
+      }));
+    });
+    return () => clearTimeout(timerId);
   }, []);
 
   const signOut = async () => {

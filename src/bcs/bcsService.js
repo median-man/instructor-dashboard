@@ -1,6 +1,7 @@
 import * as idb from "idb-keyval";
 import * as bcsApi from "./bcsApi";
 import pick from "lodash/pick";
+import jwtDecode from "jwt-decode";
 
 const BCS_DB_NAMESPACE = "bcs";
 const bcsDbKey = (key) => `${BCS_DB_NAMESPACE}:${key}`;
@@ -28,6 +29,25 @@ const db = {
 };
 
 export const token = () => db.get("token");
+
+// Unix ts in MS of the token exp.
+export const tokenExpAt = async () => {
+  const authToken = await token();
+  if (!authToken) {
+    return -1;
+  }
+  const { minutesTimeout, creationTime } = jwtDecode(token);
+  return minutesTimeout * 60 * 1000 + Date.parse(creationTime);
+};
+
+export const isLoggedIn = async () => {
+  try {
+    return (await tokenExpAt()) > Date.now();
+  } catch (error) {
+    console.error(error);
+    return false;
+  }
+};
 
 export const signOut = () => db.clear();
 

@@ -125,14 +125,14 @@ function HomeworkIssuesSection({ grades }) {
 }
 
 function HomeworkIssueItem({ grade }) {
-  const { mark } = grade;
+  const { mark, status } = grade;
   const { title } = grade.assignment;
 
   let statusText = "not submitted";
   let statusColor = "danger";
   if (mark === "I") {
     statusText = "incomplete";
-  } else {
+  } else if (status === "ungraded") {
     statusText = "ungraded";
     statusColor = "warning";
   }
@@ -156,7 +156,7 @@ function HomeworkIssueItem({ grade }) {
 function StudentTable({ students, onSelectStudent, onHelp }) {
   return (
     <table
-      className="table table-sm table-hover mt-5 caption-top"
+      className="table table-sm table-hover mt-5 caption-top mx-auto"
       style={{ maxWidth: 650 }}
     >
       <caption>
