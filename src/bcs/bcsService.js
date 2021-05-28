@@ -70,6 +70,10 @@ export const cohorts = async () => {
     db.set("cohorts", result);
     return { result };
   } catch (error) {
+    if (error.status === 401) {
+      error.message = "You must login.";
+      await signOut();
+    }
     return { error };
   }
 };
@@ -84,24 +88,35 @@ export const students = async ({ cohortId }) => {
     if (result) {
       return { result };
     }
-    const sessions = await bcsApi.sessions({
-      authToken,
-      enrollmentId: parseInt(cohortId),
-    });
-    const academicSessions = sessions.calendarSessions
+    const enrollmentId = parseInt(cohortId);
+    const [sessions, assignments] = await Promise.all([
+      bcsApi.sessions({
+        authToken,
+        enrollmentId,
+      }),
+      bcsApi.assignments({
+        authToken,
+        enrollmentId,
+      }),
+    ]);
+    const studentMap = new Map();
+
+    // fetch session details for each session to compile the attendance of each student
+    const academicSess = sessions.calendarSessions
       .filter((session) => session.context.contextCode === "academic")
       .map((session) => session.session.id);
 
     const sessionDetails = await Promise.all(
-      academicSessions.map((sessionId) =>
+      academicSess.map((sessionId) =>
         bcsApi.sessionDetail({ authToken, sessionId })
       )
     );
-    const studentAttendance = new Map();
+
+    // populate studentAttendance with students and attendance data.
     sessionDetails.forEach((sessDetails) => {
       sessDetails.students.forEach((stuDetails) => {
         const key = stuDetails.student.id;
-        let student = studentAttendance.get(key);
+        let student = studentMap.get(key);
         if (!student) {
           student = pick(stuDetails.student, [
             "id",
@@ -113,7 +128,8 @@ export const students = async ({ cohortId }) => {
           student.attendance = [];
           student.totalAbsent = 0;
           student.excusedAbsent = 0;
-          studentAttendance.set(key, student);
+          student.grades = [];
+          studentMap.set(key, student);
         }
 
         const attendance = {
@@ -127,13 +143,52 @@ export const students = async ({ cohortId }) => {
         if (attendance.absent) {
           student.totalAbsent += 1;
         }
-
         student.attendance.push(attendance);
       });
     });
-    await db.set(`students:${cohortId}`, studentAttendance);
-    console.log({ studentAttendance });
-    return { result: studentAttendance };
+
+    // fetch assignment details to compile homework records for each student
+    const requiredAssignmentIds = assignments.calendarAssignments
+      .filter((assignment) => assignment.required)
+      .map((assignment) => assignment.id);
+
+    const assignmentDetails = await Promise.all(
+      requiredAssignmentIds.map((assignmentId) =>
+        bcsApi.assignmentDetail({ authToken, assignmentId })
+      )
+    );
+
+    assignmentDetails.forEach((assDetail) => {
+      const assignment = pick(assDetail.assignment, [
+        "id",
+        "dueDate",
+        "effectiveDueDate",
+        "title",
+      ]);
+      assignment.type = /project/i.test(assignment.title)
+        ? "project"
+        : "homework";
+
+      assDetail.students.forEach((student) => {
+        const { id } = student.student;
+        const letterGrade = student.grade?.grade;
+        const grade = {
+          assignment,
+          status: letterGrade
+            ? "graded"
+            : student.submission
+            ? "ungraded"
+            : "not_submitted",
+          mark: letterGrade || "",
+        };
+        const studentRecord = studentMap.get(id);
+        studentRecord.grades.push(grade);
+      });
+    });
+
+    await db.set(`students:${cohortId}`, studentMap);
+
+    return { result: studentMap };
   } catch (error) {
     return { error };
   }

@@ -27,7 +27,11 @@ const getJSON = async (endpoint, headers = {}) => {
     },
   });
   if (!res.ok) {
-    throw new NetworkError({ message: res.statusText, code: res.statusText });
+    console.log(res);
+    throw new NetworkError({
+      message: res.statusText || "Network error",
+      status: res.status,
+    });
   }
   return res.json();
 };
@@ -42,3 +46,9 @@ export const sessions = ({ authToken, enrollmentId }) =>
 
 export const sessionDetail = ({ authToken, sessionId }) =>
   postJSON("/sessionDetail", { sessionId }, { authToken });
+
+export const assignments = ({ authToken, enrollmentId }) =>
+  postJSON("/assignments", { enrollmentId }, { authToken });
+
+export const assignmentDetail = ({ authToken, assignmentId }) =>
+  postJSON("/assignmentDetail", { assignmentId }, { authToken });
