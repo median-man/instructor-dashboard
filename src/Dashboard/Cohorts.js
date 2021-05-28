@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { useCohorts } from "../bcs";
 
 function Cohorts() {
@@ -9,10 +9,16 @@ function Cohorts() {
   }, [cohorts]);
 
   if (cohorts.pending || !cohorts.isLoaded) {
-    return <div>Loading cohorts...</div>;
+    return <p>Loading cohorts...</p>;
   }
   if (cohorts.error) {
-    return <div>Error loading cohorts. {cohorts.error.message}</div>;
+    return <p>Error loading cohorts. {cohorts.error.message}</p>;
+  }
+  if (cohorts.result.length === 0) {
+    return <p>You don't have any cohorts.</p>;
+  }
+  if (cohorts.result.length === 1) {
+    return <Redirect to={`/${cohorts.result[0].enrollmentId}`} />;
   }
   return (
     <>
