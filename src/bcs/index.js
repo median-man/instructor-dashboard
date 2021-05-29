@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import * as bcsService from "./bcsService";
 
 const bcsContext = createContext({
@@ -10,35 +10,15 @@ const bcsContext = createContext({
 });
 
 export function BcsProvider({ children }) {
-  const [state, setState] = useState({
+  const [state, setState] = useState(() => ({
     error: "",
-    pending: true,
-    isLoggedIn: false,
-  });
-
-  useEffect(() => {
-    let timerId;
-    bcsService.isLoggedIn().then((isLoggedIn) => {
-      setState((prevState) => ({
-        ...prevState,
-        isLoggedIn,
-        pending: false,
-      }));
-    });
-    return () => clearTimeout(timerId);
-  }, []);
+    pending: false,
+    isLoggedIn: bcsService.isLoggedIn(),
+  }));
 
   const signOut = async () => {
-    try {
-      await bcsService.signOut();
-      setState((prevState) => ({ ...prevState, isLoggedIn: false }));
-    } catch (error) {
-      console.error(error);
-      setState((prevState) => ({
-        ...prevState,
-        error: "Unable to log out. Please try again.",
-      }));
-    }
+    bcsService.signOut();
+    setState((prevState) => ({ ...prevState, isLoggedIn: false }));
   };
 
   const loginError = (error) => {
