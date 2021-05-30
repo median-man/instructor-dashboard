@@ -4,7 +4,7 @@ The missing tool for Bootcamp Instructors and TAs. Provides a dashboard tailored
 
 This project is in early development. Feel free to use it; but be careful with your student information. Do not use this on a shared device as a precaution and always logout if you are leaving your device unattended.
 
-Progress and new features will be added sporadically. (I work full-time and want have time friends, family, and fun. 😁)
+Progress and new features will be added sporadically. (I work full-time and want have time for friends, family, and fun. 😁)
 
 ## Bugs/Suggestions
 
