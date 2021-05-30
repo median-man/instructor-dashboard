@@ -160,7 +160,7 @@ class BcsClient {
    * @returns {Promise<Object>}
    */
   sessions(enrollmentId) {
-    return this.#withCache("sessions", () =>
+    return this.#withCache(`sessions/${enrollmentId}`, () =>
       postJSON("/sessions", { enrollmentId }, this.#authHeader)
     );
   }
@@ -172,7 +172,7 @@ class BcsClient {
    * @returns {Promise<Object>}
    */
   sessionDetail(sessionId) {
-    return this.#withCache("sessionDetail", () =>
+    return this.#withCache(`sessionDetail/${sessionId}`, () =>
       postJSON("/sessionDetail", { sessionId }, this.#authHeader)
     );
   }
@@ -184,7 +184,7 @@ class BcsClient {
    * @returns {Promise<Object>}
    */
   assignments(enrollmentId) {
-    return this.#withCache("assignments", () =>
+    return this.#withCache(`assignments/${enrollmentId}`, () =>
       postJSON("/assignments", { enrollmentId }, this.#authHeader)
     );
   }
@@ -196,7 +196,7 @@ class BcsClient {
    * @returns {Promise<Object>}
    */
   assignmentDetail(assignmentId) {
-    return this.#withCache("assignmentDetail", () =>
+    return this.#withCache(`assignmentDetail/${assignmentId}`, () =>
       postJSON("/assignmentDetail", { assignmentId }, this.#authHeader)
     );
   }
