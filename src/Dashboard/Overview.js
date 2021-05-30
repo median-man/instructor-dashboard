@@ -5,8 +5,35 @@ import { useStudents } from "../bcs";
 import { classNamesFromArray, compactArray } from "../util";
 import Loader from "./Loader";
 import OffCanvas from "./OffCanvas";
+import Table from "./StudentTable";
 
 const MAX_ABSENCES = 5;
+
+const totalGrades = (grades) => {
+  let totalIncomplete = 0;
+  let totalNotSubmitted = 0;
+  let totalUngraded = 0;
+  grades
+    .filter(
+      (grade) => Date.parse(grade.assignment.effectiveDueDate) < Date.now()
+    )
+    .forEach((grade) => {
+      if (grade.status === "graded" && grade.mark !== "I") {
+        return;
+      }
+      if (grade.mark === "I") {
+        totalIncomplete += 1;
+        return;
+      }
+      if (grade.status === "not_submitted") {
+        totalNotSubmitted += 1;
+        return;
+      }
+      totalUngraded += 1;
+    });
+  const totalMissedHW = totalIncomplete + totalNotSubmitted;
+  return { totalIncomplete, totalNotSubmitted, totalUngraded, totalMissedHW };
+};
 
 function Overview() {
   const { enrollmentId } = useParams();
@@ -39,7 +66,8 @@ function Overview() {
     });
   };
 
-  const handleSelectStudent = (student) => {
+  const handleSelectStudent = (studentId) => {
+    const student = students.result.get(studentId);
     setOffCanvasState({
       show: true,
       title: `${student.firstName} ${student.lastName}`,
@@ -49,10 +77,39 @@ function Overview() {
 
   return (
     <>
-      <StudentTable
-        onSelectStudent={handleSelectStudent}
-        students={Array.from(students.result.values())}
+      <Table
         onHelp={handleHelp}
+        onSelectStudent={handleSelectStudent}
+        students={Array.from(students.result.values()).map((student) => {
+          const { firstName, lastName, totalAbsent, id } = student;
+          const name = `${firstName} ${lastName}`;
+          const {
+            totalIncomplete,
+            totalNotSubmitted,
+            totalUngraded,
+            totalMissedHW,
+          } = totalGrades(student.grades);
+
+          let status;
+          if (totalAbsent > MAX_ABSENCES || totalMissedHW > 2) {
+            status = "incomplete";
+          } else if (totalAbsent > MAX_ABSENCES - 1 || totalMissedHW > 1) {
+            status = "warning";
+          } else {
+            status = "ok";
+          }
+
+          return {
+            id,
+            name,
+            totalAbsent,
+            totalIncomplete,
+            totalNotSubmitted,
+            totalUngraded,
+            totalMissedHW,
+            status,
+          };
+        })}
       />
       <OffCanvas onClose={hideOffCanvas} {...offCanvasState} />
     </>
@@ -151,97 +208,6 @@ function HomeworkIssueItem({ grade }) {
       </div>
       <div className="ps-2">{title}</div>
     </li>
-  );
-}
-
-function StudentTable({ students, onSelectStudent, onHelp }) {
-  return (
-    <table
-      className="table table-sm table-hover mt-5 caption-top mx-auto"
-      style={{ maxWidth: 650 }}
-    >
-      <caption>
-        Click on a student to view additional details.{" "}
-        <button
-          style={{ verticalAlign: "inherit", padding: 0, cursor: "help" }}
-          className="btn btn-link"
-          onClick={onHelp}
-        >
-          help
-        </button>
-      </caption>
-      <thead>
-        <tr>
-          <th scope="col">Name</th>
-          <th scope="col">Absent</th>
-          <th scope="col">Incomplete</th>
-          <th scope="col">Not Submitted</th>
-          <th scope="col">Missed HW</th>
-          <th scope="col">Ungraded</th>
-        </tr>
-      </thead>
-      <tbody>
-        {students.map((student) => (
-          <StudentTableRow
-            key={student.id}
-            student={student}
-            onSelectStudent={onSelectStudent}
-          />
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-const totalGrades = (grades) => {
-  let totalIncomplete = 0;
-  let totalNotSubmitted = 0;
-  let totalUngraded = 0;
-  grades
-    .filter(
-      (grade) => Date.parse(grade.assignment.effectiveDueDate) < Date.now()
-    )
-    .forEach((grade) => {
-      if (grade.status === "graded" && grade.mark !== "I") {
-        return;
-      }
-      if (grade.mark === "I") {
-        totalIncomplete += 1;
-        return;
-      }
-      if (grade.status === "not_submitted") {
-        totalNotSubmitted += 1;
-        return;
-      }
-      totalUngraded += 1;
-    });
-  const totalMissedHW = totalIncomplete + totalNotSubmitted;
-  return { totalIncomplete, totalNotSubmitted, totalUngraded, totalMissedHW };
-};
-
-function StudentTableRow({ student, onSelectStudent }) {
-  const { firstName, lastName, totalAbsent } = student;
-  const { totalIncomplete, totalNotSubmitted, totalUngraded, totalMissedHW } =
-    totalGrades(student.grades);
-
-  let trClassName = "";
-  if (totalAbsent > MAX_ABSENCES || totalMissedHW > 2) {
-    trClassName = "table-danger";
-  } else if (totalAbsent > MAX_ABSENCES - 1 || totalMissedHW > 1) {
-    trClassName = "table-warning";
-  }
-
-  return (
-    <tr className={trClassName} onClick={() => onSelectStudent(student)}>
-      <td>
-        {firstName} {lastName}
-      </td>
-      <td>{totalAbsent}</td>
-      <td>{totalIncomplete}</td>
-      <td>{totalNotSubmitted}</td>
-      <td>{totalMissedHW}</td>
-      <td>{totalUngraded}</td>
-    </tr>
   );
 }
 

@@ -8,7 +8,8 @@ function OffCanvas({ show, style, title, onClose, children }) {
   ]);
 
   return (
-    <div
+    <section
+      aria-live="polite"
       className={modalClassName}
       tabIndex={-1}
       id="offCanvas"
@@ -17,7 +18,7 @@ function OffCanvas({ show, style, title, onClose, children }) {
     >
       <Header onClose={onClose}>{title}</Header>
       <Body>{children}</Body>
-    </div>
+    </section>
   );
 }
 
