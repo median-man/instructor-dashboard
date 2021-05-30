@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useStudents } from "../bcs";
 import { classNamesFromArray, compactArray } from "../util";
+import Loader from "./Loader";
 import OffCanvas from "./OffCanvas";
 
 const MAX_ABSENCES = 5;
@@ -24,7 +25,7 @@ function Overview() {
     return <p>{students.error}</p>;
   }
   if (students.pending || !students.isLoaded) {
-    return <p>Loading students...</p>;
+    return <Loader>Loading student data...</Loader>;
   }
 
   const hideOffCanvas = () =>

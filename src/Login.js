@@ -72,7 +72,10 @@ function Login() {
   };
 
   return (
-    <main style={{ maxWidth: 330 }} className="w-100 py-5 mx-auto">
+    <main
+      style={{ maxWidth: 330 }}
+      className="w-100 py-5 mx-auto h-100 d-flex align-items-center"
+    >
       <form onSubmit={handleSubmit}>
         <Heading />
         <FormControl
@@ -171,7 +174,7 @@ function SubmitButton({ pending, ...btnProps }) {
       className="w-100 btn btn-lg btn-primary"
       {...btnProps}
     >
-      {pending ? <ButtonSpinner>Loading...</ButtonSpinner> : "Submit"}
+      {pending ? <ButtonSpinner>Logging in...</ButtonSpinner> : "Submit"}
     </button>
   );
 }
@@ -180,11 +183,11 @@ function ButtonSpinner({ children }) {
   return (
     <>
       <span
-        className="spinner-border spinner-border-sm"
+        className="spinner-border spinner-border-sm me-3"
         role="status"
         aria-hidden="true"
       />
-      <span className="visually-hidden">{children}</span>
+      {children}
     </>
   );
 }

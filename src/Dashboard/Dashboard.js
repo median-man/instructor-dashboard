@@ -4,7 +4,7 @@ import Cohorts from "./Cohorts";
 
 function Dashboard() {
   return (
-    <div className="container">
+    <div className="container-fluid h-100 w-100">
       <Switch>
         <Route path="/:enrollmentId">
           <Overview />

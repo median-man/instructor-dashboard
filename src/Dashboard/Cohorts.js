@@ -1,6 +1,7 @@
 import { useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { useCohorts } from "../bcs";
+import Loader from "./Loader";
 
 function Cohorts() {
   const cohorts = useCohorts();
@@ -9,7 +10,7 @@ function Cohorts() {
   }, [cohorts]);
 
   if (cohorts.pending || !cohorts.isLoaded) {
-    return <p>Loading cohorts...</p>;
+    return <Loader>Loading cohorts...</Loader>;
   }
   if (cohorts.error) {
     return <p>Error loading cohorts. {cohorts.error.message}</p>;
