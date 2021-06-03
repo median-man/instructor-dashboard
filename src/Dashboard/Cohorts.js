@@ -22,18 +22,22 @@ function Cohorts() {
     return <Redirect to={`/${cohorts.result[0].enrollmentId}`} />;
   }
   return (
-    <>
-      <h1>Please choose a cohort</h1>
-      {cohorts.result.map(({ name, enrollmentId }) => (
-        <Link
-          key={enrollmentId}
-          to={`/${enrollmentId}`}
-          className="btn btn-outline-secondary"
-        >
-          {name}
-        </Link>
-      ))}{" "}
-    </>
+    <main className="h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+      <h1 className="h3 mb-5">Select a course:</h1>
+      <div className="card">
+        <ul className="list-group list-group-flush">
+          {cohorts.result.map(({ name, enrollmentId }) => (
+            <Link
+              key={enrollmentId}
+              to={`/${enrollmentId}`}
+              className="list-group-item list-group-item-action"
+            >
+              {name}
+            </Link>
+          ))}
+        </ul>
+      </div>
+    </main>
   );
 }
 
