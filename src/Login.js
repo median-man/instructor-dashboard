@@ -118,7 +118,7 @@ function Login() {
 
 function Heading() {
   return (
-    <h1 className="h5 mb-3 fw-normal">
+    <h1 className="h3 mb-3 fw-normal">
       Please sign in with your BCS Credentials
     </h1>
   );
