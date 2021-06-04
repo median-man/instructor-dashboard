@@ -1,4 +1,3 @@
-import { format as formatDate } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useCohort, useStudents } from "../bcs";
@@ -148,6 +147,8 @@ function StudentDetails({ student }) {
   );
 }
 
+const dateFormatter = new Intl.DateTimeFormat({ dateStyle: "short" });
+
 function AbsencesSection({ attendance }) {
   const absentSess = attendance.filter((sess) => sess.absent);
   return (
@@ -158,7 +159,7 @@ function AbsencesSection({ attendance }) {
           {absentSess.length === 0 && <p>None</p>}
           {absentSess.map((sess) => (
             <li key={sess.startTime} className="list-group-item">
-              {formatDate(new Date(sess.startTime), "M/d/yyyy")}{" "}
+              {dateFormatter.format(new Date(sess.startTime))}{" "}
               {sess.excused && "excused"}
             </li>
           ))}
