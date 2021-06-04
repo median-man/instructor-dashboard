@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ReactComponent as SortUp } from "bootstrap-icons/icons/sort-up.svg";
 import { ReactComponent as SortDown } from "bootstrap-icons/icons/sort-down.svg";
 import sortBy from "lodash/sortBy";
+import { classNamesFromArray } from "../util";
 
 function StudentTable({ students, onSelectStudent, onHelp }) {
   return (
@@ -94,21 +95,36 @@ const headingConfig = [
     label: "Ungraded",
     fieldName: "totalUngraded",
   },
+  {
+    // Status column is for screen-readers. Color variants are used to convey
+    // the status.
+    label: "Status",
+    fieldName: "status",
+    screenReaderOnly: true,
+  },
 ];
 
 function TableHeader({ sortCol, sortOrder, onToggleSort }) {
+  console.log(headingConfig);
   return (
     <thead>
       <tr>
-        {headingConfig.map((headingProps) => (
-          <TableHeading
-            key={headingProps.fieldName}
-            sortCol={sortCol}
-            sortOrder={sortOrder}
-            onToggleSort={onToggleSort}
-            {...headingProps}
-          />
-        ))}
+        {headingConfig.map((headingProps) =>
+          headingProps.screenReaderOnly ? (
+            <TableHeadingVisuallyHidden
+              key={headingProps.fieldName}
+              {...headingProps}
+            />
+          ) : (
+            <TableHeading
+              key={headingProps.fieldName}
+              sortCol={sortCol}
+              sortOrder={sortOrder}
+              onToggleSort={onToggleSort}
+              {...headingProps}
+            />
+          )
+        )}
       </tr>
     </thead>
   );
@@ -132,6 +148,14 @@ function TableHeading({ sortOrder, sortCol, label, fieldName, onToggleSort }) {
       >
         {label} <SortIcon sortOrder={sortOrder} show={sortCol === fieldName} />
       </span>
+    </th>
+  );
+}
+
+function TableHeadingVisuallyHidden({ label }) {
+  return (
+    <th scope="col" className="visually-hidden">
+      {label}
     </th>
   );
 }
@@ -175,6 +199,8 @@ function StudentTableRow({ student, onSelectStudent }) {
       <td>{totalNotSubmitted}</td>
       <td>{totalMissedHW}</td>
       <td>{totalUngraded}</td>
+      {/* Status column for screen-readers only */}
+      <td className="visually-hidden">{status}</td>
     </tr>
   );
 }
