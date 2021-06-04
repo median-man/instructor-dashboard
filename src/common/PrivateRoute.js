@@ -1,5 +1,5 @@
 import { Route, Redirect } from "react-router-dom";
-import { useBcs } from "./bcs";
+import { useBcs } from "../bcs";
 function PrivateRoute({ children, ...rest }) {
   const { isLoggedIn } = useBcs();
   return (

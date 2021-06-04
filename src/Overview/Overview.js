@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useCohort, useStudents } from "../bcs";
 import { classNamesFromArray, compactArray, useDocumentMeta } from "../util";
-import Loader from "./Loader";
+import Loader from "../common/Loader";
 import OffCanvas from "./OffCanvas";
 import Table from "./StudentTable";
 

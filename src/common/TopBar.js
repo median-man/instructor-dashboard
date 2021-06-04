@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { useBcs } from "./bcs";
+import { useBcs } from "../bcs";
 
 function TopBar() {
   const { isLoggedIn, signOut } = useBcs();

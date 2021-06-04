@@ -1,5 +1,5 @@
 import { Switch, Route } from "react-router";
-import Overview from "./Overview";
+import Overview from "../Overview";
 import Cohorts from "./Cohorts";
 
 function Dashboard() {
