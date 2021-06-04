@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ReactComponent as SortUp } from "bootstrap-icons/icons/sort-up.svg";
 import { ReactComponent as SortDown } from "bootstrap-icons/icons/sort-down.svg";
 import sortBy from "lodash/sortBy";
-import { classNamesFromArray } from "../util";
 
 function StudentTable({ students, onSelectStudent, onHelp }) {
   return (
@@ -105,7 +104,6 @@ const headingConfig = [
 ];
 
 function TableHeader({ sortCol, sortOrder, onToggleSort }) {
-  console.log(headingConfig);
   return (
     <thead>
       <tr>

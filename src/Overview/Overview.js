@@ -1,4 +1,4 @@
-import formatDate from "@bitty/format-date";
+import { format as formatDate } from "date-fns";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import { useCohort, useStudents } from "../bcs";
@@ -158,7 +158,7 @@ function AbsencesSection({ attendance }) {
           {absentSess.length === 0 && <p>None</p>}
           {absentSess.map((sess) => (
             <li key={sess.startTime} className="list-group-item">
-              {formatDate(new Date(sess.startTime), "M/D/YYYY")}{" "}
+              {formatDate(new Date(sess.startTime), "M/d/yyyy")}{" "}
               {sess.excused && "excused"}
             </li>
           ))}
