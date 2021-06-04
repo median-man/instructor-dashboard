@@ -1,10 +1,12 @@
 import { useEffect } from "react";
 import { Link, Redirect } from "react-router-dom";
 import { useCohorts } from "../bcs";
+import { useDocumentMeta } from "../util";
 import Loader from "./Loader";
 
 function Cohorts() {
   const cohorts = useCohorts();
+  useDocumentMeta({ title: "Select a cohort" });
   useEffect(() => {
     cohorts.load();
   }, [cohorts]);

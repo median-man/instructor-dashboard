@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router";
 import * as idb from "idb-keyval";
 import { useBcs } from "./bcs";
+import { useDocumentMeta } from "./util";
 
 const rememberEmail = (email) => idb.set("login:email", email);
 const clearEmail = () => idb.del("login:email");
@@ -20,6 +21,8 @@ function Login() {
     remember: false,
     dirty: false,
   });
+
+  useDocumentMeta({ title: "Login | Bootcamp Instructor Dashboard" });
 
   // Redirect if the user is logged in.
   useEffect(() => {

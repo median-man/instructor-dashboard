@@ -148,3 +148,25 @@ export const students = async ({ cohortId }) => {
     return { error };
   }
 };
+
+/**
+ * Fetches cohorts and returns the first cohort matching the given search
+ * criteria.
+ *
+ * @param {Object} criteria - Search criteria
+ * @param {number} criteria.enrollmentId
+ * @returns {Object} res The first matching cohort or null if not found.
+ * @returns {Object|null} res.result The result of a successful request. May be
+ * null if the request succeeds but no cohort is found.
+ * @returns {Error|null} res.error The error if the request fails. Null if
+ * request succeeds.
+ */
+export const findCohort = async ({ enrollmentId }) => {
+  const { error, result } = await cohorts();
+  if (error) {
+    return { error, result: null };
+  }
+  const cohort = result.find((c) => c.enrollmentId === enrollmentId);
+  console.log(result, cohort);
+  return { result: cohort || null, error: null };
+};

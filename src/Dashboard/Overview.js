@@ -1,13 +1,16 @@
 import formatDate from "@bitty/format-date";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
-import { useStudents } from "../bcs";
-import { classNamesFromArray, compactArray } from "../util";
+import { useCohort, useStudents } from "../bcs";
+import { classNamesFromArray, compactArray, useDocumentMeta } from "../util";
 import Loader from "./Loader";
 import OffCanvas from "./OffCanvas";
 import Table from "./StudentTable";
 
 const MAX_ABSENCES = 5;
+
+const pageTitle = (cohortName) =>
+  cohortName ? `Overview: ${cohortName}` : "Overview";
 
 const totalGrades = (grades) => {
   let totalIncomplete = 0;
@@ -42,7 +45,12 @@ function Overview() {
     title: "",
     children: null,
   });
+  const cohort = useCohort({ enrollmentId: parseInt(enrollmentId) });
+  useDocumentMeta({ title: pageTitle(cohort.result?.name) });
+
   const students = useStudents(enrollmentId);
+
+  useEffect(() => cohort.load(), [cohort]);
 
   useEffect(() => {
     students.load();
