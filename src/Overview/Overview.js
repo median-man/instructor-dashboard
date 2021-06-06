@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useCohort, useStudents } from "../bcs";
+import { useStudents } from "../bcs";
 import { classNamesFromArray, compactArray, useDocumentMeta } from "../util";
 import Loader from "../common/Loader";
 import OffCanvas from "./OffCanvas";
@@ -36,18 +36,15 @@ const totalGrades = (grades) => {
   return { totalIncomplete, totalNotSubmitted, totalUngraded, totalMissedHW };
 };
 
-function Overview({ enrollmentId }) {
+function Overview({ cohort }) {
   const [offCanvasState, setOffCanvasState] = useState({
     show: false,
     title: "",
     children: null,
   });
-  const cohort = useCohort({ enrollmentId });
-  useDocumentMeta({ title: pageTitle(cohort.result?.name) });
+  useDocumentMeta({ title: pageTitle(cohort.name) });
 
-  const students = useStudents(enrollmentId);
-
-  useEffect(() => cohort.load(), [cohort]);
+  const students = useStudents(cohort.enrollmentId);
 
   useEffect(() => {
     students.load();
