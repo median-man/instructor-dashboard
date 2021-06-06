@@ -4,7 +4,8 @@ import { useCohorts } from "../bcs";
 import Loader from "../common/Loader";
 import Overview from "../Overview";
 import Cohorts from "./Cohorts";
-// import SideBar from "./SideBar";
+import SideBar from "./SideBar";
+import Assignments from "../Assignments";
 
 function Dashboard() {
   const match = useRouteMatch("/:enrollmentId?");
@@ -14,12 +15,16 @@ function Dashboard() {
     cohorts.load();
   }, [cohorts]);
 
+  useEffect(() => {
+    console.log(`EnrollmentId changed to ${enrollmentId}`);
+  }, [enrollmentId]);
+
   const cohort =
     cohorts.result?.find((c) => c.enrollmentId === enrollmentId) || null;
 
   return (
     <div className="h-100 w-100 d-flex">
-      {/* <SideBar cohorts={cohorts} currentCohort={cohort} /> */}
+      <SideBar cohorts={cohorts.result} currentCohort={cohort} />
       <div className="container-fluid">
         {!cohorts.isLoaded ? (
           <Loader>Loading cohorts...</Loader>
@@ -27,6 +32,9 @@ function Dashboard() {
           <p>Error loading cohorts. {cohorts.error.message}</p>
         ) : (
           <Switch>
+            <Route path="/:enrollmentId/assignments">
+              <Assignments cohort={cohort} />
+            </Route>
             <Route path="/:enrollmentId">
               <Overview cohort={cohort} />
             </Route>

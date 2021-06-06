@@ -4,7 +4,7 @@ import { useBcs } from "../bcs";
 function TopBar() {
   const { isLoggedIn, signOut } = useBcs();
   return (
-    <header className="navbar navbar-expand navbar-dark bg-dark shadow">
+    <header className="navbar navbar-expand navbar-dark bg-dark">
       <Link className="navbar-brand px-3" to="/">
         Instructor Dashboard
       </Link>
