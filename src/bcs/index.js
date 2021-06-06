@@ -74,8 +74,5 @@ const useAsyncRequestor = (requestor) => {
 
 export const useCohorts = () => useAsyncRequestor(bcsService.cohorts);
 
-export const useCohort = ({ enrollmentId }) =>
-  useAsyncRequestor(() => bcsService.findCohort({ enrollmentId }));
-
 export const useStudents = (enrollmentId) =>
   useAsyncRequestor(() => bcsService.students({ enrollmentId }));
