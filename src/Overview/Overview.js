@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router";
 import { useCohort, useStudents } from "../bcs";
 import { classNamesFromArray, compactArray, useDocumentMeta } from "../util";
 import Loader from "../common/Loader";
@@ -37,14 +36,13 @@ const totalGrades = (grades) => {
   return { totalIncomplete, totalNotSubmitted, totalUngraded, totalMissedHW };
 };
 
-function Overview() {
-  const { enrollmentId } = useParams();
+function Overview({ enrollmentId }) {
   const [offCanvasState, setOffCanvasState] = useState({
     show: false,
     title: "",
     children: null,
   });
-  const cohort = useCohort({ enrollmentId: parseInt(enrollmentId) });
+  const cohort = useCohort({ enrollmentId });
   useDocumentMeta({ title: pageTitle(cohort.result?.name) });
 
   const students = useStudents(enrollmentId);

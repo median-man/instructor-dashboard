@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import * as bcsService from "./bcsService";
 
 const bcsContext = createContext({
@@ -77,5 +77,5 @@ export const useCohorts = () => useAsyncRequestor(bcsService.cohorts);
 export const useCohort = ({ enrollmentId }) =>
   useAsyncRequestor(() => bcsService.findCohort({ enrollmentId }));
 
-export const useStudents = (cohortId) =>
-  useAsyncRequestor(() => bcsService.students({ cohortId }));
+export const useStudents = (enrollmentId) =>
+  useAsyncRequestor(() => bcsService.students({ enrollmentId }));

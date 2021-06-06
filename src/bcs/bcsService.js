@@ -48,12 +48,12 @@ export const cohorts = async () => {
   }
 };
 
-export const students = async ({ cohortId }) => {
+export const students = async ({ enrollmentId }) => {
   try {
     if (!bcsClient.isLoggedIn) {
       throw new Error("You must be logged in to access cohorts.");
     }
-    const enrollmentId = parseInt(cohortId);
+
     const [sessions, assignments] = await Promise.all([
       bcsClient.sessions(enrollmentId),
       bcsClient.assignments(enrollmentId),
@@ -167,6 +167,5 @@ export const findCohort = async ({ enrollmentId }) => {
     return { error, result: null };
   }
   const cohort = result.find((c) => c.enrollmentId === enrollmentId);
-  console.log(result, cohort);
   return { result: cohort || null, error: null };
 };
