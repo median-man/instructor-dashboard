@@ -1,8 +1,6 @@
-import { useState } from "react";
-import { Link, NavLink, useLocation, useRouteMatch } from "react-router-dom";
-import { classNamesFromArray } from "../util";
+import { NavLink } from "react-router-dom";
 
-function SideBar({ cohorts, currentCohort }) {
+function SideBar({ currentCohort }) {
   return (
     <div
       className="d-flex flex-column flex-shrink-0 p-3 text-dark bg-light shadow"

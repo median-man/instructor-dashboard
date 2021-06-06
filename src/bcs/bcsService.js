@@ -148,3 +148,60 @@ export const students = async ({ enrollmentId }) => {
     return { error };
   }
 };
+
+export const assignments = async ({ enrollmentId }) => {
+  try {
+    if (!bcsClient.isLoggedIn) {
+      throw new Error("You must be logged in to access assignments.");
+    }
+    const assignments = await bcsClient.assignments(enrollmentId);
+    const assignmentDetails = await Promise.all(
+      assignments.calendarAssignments
+        .filter((a) => a.required)
+        .map((a) => bcsClient.assignmentDetail(a.id))
+    );
+    const gradesFromStudents = (students) => {
+      let ungraded = 0;
+      let unSubmitted = 0;
+      let incomplete = 0;
+      let grades = {
+        a: 0,
+        b: 0,
+        c: 0,
+        d: 0,
+        f: 0,
+      };
+      const gradeLetter = (grade) =>
+        Object.keys(grades).find((letter) =>
+          new RegExp(letter, "i").test(grade.grade)
+        );
+      students.forEach(({ grade, submission }) => {
+        if (!submission) {
+          unSubmitted += 1;
+          return;
+        }
+        if (!grade) {
+          ungraded += 1;
+        }
+        if (grade.grade === "I") {
+          incomplete += 1;
+          return;
+        }
+        grades[gradeLetter(grade)] += 1;
+      });
+      return { ungraded, unSubmitted, incomplete, grades };
+    };
+    const result = assignmentDetails.map(({ assignment, students }) => {
+      return {
+        id: assignment.id,
+        dueDate: Date.parse(assignment.effectiveDueDate),
+        title: assignment.title,
+        expectedTotal: students.length,
+        ...gradesFromStudents(students),
+      };
+    });
+    return { error: null, result };
+  } catch (error) {
+    return { error, result: null };
+  }
+};

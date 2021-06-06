@@ -15,10 +15,6 @@ function Dashboard() {
     cohorts.load();
   }, [cohorts]);
 
-  useEffect(() => {
-    console.log(`EnrollmentId changed to ${enrollmentId}`);
-  }, [enrollmentId]);
-
   const cohort =
     cohorts.result?.find((c) => c.enrollmentId === enrollmentId) || null;
 

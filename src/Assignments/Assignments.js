@@ -1,60 +1,36 @@
 import { useEffect } from "react";
-import { useParams } from "react-router";
+import { useAssignments } from "../bcs";
+import Loader from "../common/Loader";
 import { useDocumentMeta } from "../util";
 import Calendar from "./Calendar";
 import GradesPieChart from "./GradesPieChart";
 import ProgressBar from "./ProgressBar";
 
-const assignments = [
-  {
-    assignmentId: "1",
-    title: "Assignment 1: Advanced CSS Portfolio",
-    dueDate: Date.parse("July 2, 2021 11:59 PM"),
-    expectedTotal: 20,
-    ungraded: 2,
-    unSubmitted: 3,
-    incomplete: 1,
-    grades: {
-      a: 3,
-      b: 7,
-      c: 3,
-      d: 0,
-      f: 1,
-    },
-  },
-  {
-    assignmentId: "2",
-    title: "Assignment 2: Password Generator",
-    dueDate: Date.parse("July 28, 2021 11:59 PM"),
-    expectedTotal: 20,
-    ungraded: 10,
-    unSubmitted: 1,
-    incomplete: 0,
-    grades: {
-      a: 3,
-      b: 7,
-      c: 0,
-      d: 0,
-      f: 1,
-    },
-  },
-];
-
 const pageTitle = (cohortName) =>
   cohortName ? `Assignments: ${cohortName}` : "Assignments";
 
 function Assignments({ cohort }) {
-  const { enrollmentId } = useParams();
-  // const cohort = useCohort({ enrollmentId: parseInt(enrollmentId) });
-
   useDocumentMeta({ title: pageTitle(cohort.name) });
+  const assignments = useAssignments(cohort.enrollmentId);
+  useEffect(() => assignments.load(), [assignments]);
+
+  if (!assignments.isLoaded) {
+    return <Loader>Loading assignments...</Loader>;
+  }
+  if (assignments.error) {
+    return (
+      <div className="d-flex h-100 justify-content-center align-items-center">
+        <p className="text-center lead">Unable to load assignments</p>
+      </div>
+    );
+  }
   return (
     <div
       className="mx-auto d-flex flex-column pt-3"
       style={{ maxWidth: "40rem" }}
     >
-      {assignments.map((a) => (
-        <div key={a.assignmentId} className="row my-3 shadow border-1 p-2">
+      {assignments.result?.map((a) => (
+        <div key={a.id} className="row my-3 shadow border-1 p-2">
           <div className="col-auto  pt-1">
             <Calendar date={a.dueDate} title="Assignment due date" />
           </div>
