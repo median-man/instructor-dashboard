@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useParams } from "react-router";
-import { useCohort } from "../bcs";
 import { useDocumentMeta } from "../util";
 import Calendar from "./Calendar";
 import GradesPieChart from "./GradesPieChart";
@@ -44,14 +43,11 @@ const assignments = [
 const pageTitle = (cohortName) =>
   cohortName ? `Assignments: ${cohortName}` : "Assignments";
 
-function Assignments() {
+function Assignments({ cohort }) {
   const { enrollmentId } = useParams();
-  const cohort = useCohort({ enrollmentId: parseInt(enrollmentId) });
+  // const cohort = useCohort({ enrollmentId: parseInt(enrollmentId) });
 
-  useEffect(() => {
-    cohort.load();
-  }, [cohort]);
-  useDocumentMeta({ title: pageTitle(cohort.result?.name) });
+  useDocumentMeta({ title: pageTitle(cohort.name) });
   return (
     <div
       className="mx-auto d-flex flex-column pt-3"
