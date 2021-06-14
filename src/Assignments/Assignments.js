@@ -51,8 +51,12 @@ function Assignments({ cohort }) {
                 <div className="mb-1">
                   <p className="mb-0">
                     {/* submitted by not yet graded homework / total submitted */}
-                    Grading ({a.expectedTotal - a.unSubmitted - a.ungraded}/
-                    {a.expectedTotal - a.unSubmitted})
+                    Grading (
+                    {a.expectedTotal === a.unSubmitted
+                      ? "N/A"
+                      : `${a.expectedTotal - a.unSubmitted - a.ungraded}/
+                      ${a.expectedTotal - a.unSubmitted}`}
+                    )
                   </p>
                   <ProgressBar
                     value={a.expectedTotal - a.unSubmitted - a.ungraded}
