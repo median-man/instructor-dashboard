@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import { classNamesFromArray } from "../util";
 
 function ProgressBar({ value, min, max }) {
-  const ratio = value / (max - min);
+  const ratio = max === min ? 0 : value / (max - min);
   const width = `${Math.floor(ratio * 100)}%`;
   const variant =
     ratio < 0.7
