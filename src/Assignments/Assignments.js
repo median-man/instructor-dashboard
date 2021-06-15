@@ -18,6 +18,7 @@ function Assignments({ cohort }) {
     return <Loader>Loading assignments...</Loader>;
   }
   if (assignments.error) {
+    console.error(assignments.error);
     return (
       <div className="d-flex h-100 justify-content-center align-items-center">
         <p className="text-center lead">Unable to load assignments</p>

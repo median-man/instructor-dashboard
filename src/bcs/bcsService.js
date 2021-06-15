@@ -182,6 +182,7 @@ export const assignments = async ({ enrollmentId }) => {
         }
         if (!grade) {
           ungraded += 1;
+          return;
         }
         if (grade.grade === "I") {
           incomplete += 1;
